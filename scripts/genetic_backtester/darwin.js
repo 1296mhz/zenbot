@@ -30,7 +30,7 @@ let _ = require('lodash')
 let distanceOfTimeInWords = require('./modules/distanceOfTimeInWords')
 let ensureDirectoryExistence = require('./modules/ensureDirectoryExistence')
 let writeFileAndFolder = require('./modules/writeFileAndFolder')
-
+let saveGenerationData = require('./modules/saveGenerationData')
 let VERSION = 'Zenbot 4 Genetic Backtester v0.2.2'
 
 let PARALLEL_LIMIT = (process.env.PARALLEL_LIMIT && +process.env.PARALLEL_LIMIT) || require('os').cpus().length
@@ -251,17 +251,6 @@ let darwinMonitor = {
   }
 }
 
-
-
-/*
-let writeFileAndFolder = (filePath, data) => {
-  ensureDirectoryExistence(filePath)
-  fs.writeFile(filePath, data, err => {
-    if (err) throw err
-  })
-}
-*/
-
 let buildCommand = (taskStrategyName, phenotype) => {
   var iteration = iterationCount
 
@@ -304,6 +293,7 @@ let buildCommand = (taskStrategyName, phenotype) => {
     queryEnd: actualRange.end
   }
 }
+
 
 let readSimDataFile = (iteration) => {
   let jsonFileName = `simulations/${population_data}/gen_${generationCount}/sim_${iteration}.json`
@@ -975,24 +965,6 @@ function generateCommandParams (input)  {
   return result
 }
 
-function  saveGenerationData (csvFileName, jsonFileName, dataCSV, dataJSON) {
-  try {
-    fs.writeFileSync(csvFileName, dataCSV)
-    console.log('> Finished writing generation csv to ' + csvFileName)
-  }
-  catch (err) {
-    throw err
-  }
-
-  try {
-    fs.writeFileSync(jsonFileName, dataJSON)
-    console.log('> Finished writing generation json to ' + jsonFileName)
-  }
-  catch (err) {
-    throw err
-  }
-}
-
 let population_data = argv.population_data || `backtest_${moment().format('YYYYMMDDHHmm')}`
 
 // Find the first incomplete generation of this session, where incomplete means no "results" files
@@ -1078,7 +1050,6 @@ function simulateGeneration  (generateLaunchFile) {
   iterationCount = 1
   if (iterationCount == 1)
     runUpdate(days, argv.selector)
-
 
   let tasks = selectedStrategies.map(v => pools[v]['pool'].population().map(phenotype => {
 
@@ -1188,8 +1159,6 @@ function simulateGeneration  (generateLaunchFile) {
 
     saveLaunchFiles(generateLaunchFile, bestOverallResult[0])
 
-
-
     if (selectedStrategies.length > 1) {
       console.log(`(${bestOverallResult[0].strategy}) Best Overall Fitness ${bestOverallResult[0].fitness}, VS Buy and Hold: ${z(5, (n(bestOverallResult[0].vsBuyHold).format('0.00') + '%'), ' ').yellow} BuyAndHold Balance: ${z(5, (n(bestOverallResult[0].buyHold).format('0.000000')), ' ').yellow}  End Balance: ${z(5, (n(bestOverallResult[0].endBalance).format('0.000000')), ' ').yellow}, Wins/Losses ${bestOverallResult[0].wins}/${bestOverallResult[0].losses}, ROI ${z(5, (n(bestOverallResult[0].roi).format('0.000000')), ' ').yellow}.`)
 
@@ -1202,15 +1171,11 @@ function simulateGeneration  (generateLaunchFile) {
 
     generationProcessing = false
 
-
   })
 }
 
-
-
 console.log(`\n--==${VERSION}==--`)
 console.log(new Date().toUTCString() + '\n')
-
 
 simArgs = Object.assign({}, argv)
 if (!simArgs.selector)
@@ -1250,9 +1215,6 @@ let generateLaunchFile = (simArgs.generateLaunch) ? true : false
 let strategyName = (argv.use_strategies) ? argv.use_strategies : 'all'
 // let populationFileName = (argv.population_data) ? argv.population_data : null
 populationSize = (argv.population) ? argv.population : 100
-
-
-
 
 console.log(`Backtesting strategy ${strategyName} ...\n`)
 console.log(`Creating population of ${populationSize} ...\n`)
