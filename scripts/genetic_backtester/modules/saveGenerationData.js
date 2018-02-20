@@ -3,7 +3,7 @@
  */
 let fs = require('fs')
 
-function  saveGenerationData (csvFileName, jsonFileName, dataCSV, dataJSON) {
+function saveGenerationData (csvFileName, jsonFileName, dataCSV, dataJSON) {
   try {
     fs.writeFileSync(csvFileName, dataCSV)
     console.log('> Finished writing generation csv to ' + csvFileName)

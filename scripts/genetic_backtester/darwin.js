@@ -40,10 +40,7 @@ let VERSION = 'Zenbot 4 Genetic Backtester v0.2.2'
 
 let PARALLEL_LIMIT = (process.env.PARALLEL_LIMIT && +process.env.PARALLEL_LIMIT) || require('os').cpus().length
 
-
-
 let iterationCount = 0
-
 let selectedStrategies
 let pools = {}
 let simArgs
@@ -292,7 +289,6 @@ let buildCommand = (taskStrategyName, phenotype) => {
   }
 }
 
-
 let readSimDataFile = (iteration) => {
   let jsonFileName = `simulations/${population_data}/gen_${generationCount}/sim_${iteration}.json`
 
@@ -360,7 +356,6 @@ let runCommand = (taskStrategyName, phenotype, command, cb) => {
           // console.log(`${command.iteration}: ${command.currentTimeString}`)
         }
       }
-
     }
   })
 }
@@ -378,7 +373,6 @@ function  runUpdate  (days, selector) {
 }
 
 function processOutput  (output,taskStrategyName, pheno) {
-
 
   // let strippedOutput = StripAnsi(output)
   // let output2 = strippedOutput.substr(strippedOutput.length - 3500)
@@ -409,7 +403,6 @@ function processOutput  (output,taskStrategyName, pheno) {
     simulationResults = JSON.parse(jsonBuffer)
     fs.unlinkSync(tFileName)
   }
-
 
   if (typeof(simulationResults) === 'object'  )
   {
@@ -645,7 +638,6 @@ function simulateGeneration  (generateLaunchFile) {
     let dataJSON = JSON.stringify(poolData, null, 2)
     saveGenerationData(csvFileName, jsonFileName, dataCSV, dataJSON )
 
-
     //Display best of the generation
     console.log('\n\nGeneration\'s Best Results')
     let bestOverallResult = []
@@ -668,7 +660,6 @@ function simulateGeneration  (generateLaunchFile) {
       }
 
       // prepare command snippet from top result for this strat
-
       bestCommand = prefix + bestCommand
       //bestCommand = bestCommand + ' --asset_capital=' + argv.asset_capital + ' --currency_capital=' + argv.currency_capital
       console.log(bestCommand + '\n')
@@ -678,7 +669,6 @@ function simulateGeneration  (generateLaunchFile) {
     // if (selectedStrategies.length > 1){
     //     }
 
-    
     let bestOverallCommand = generateCommandParams(bestOverallResult[0])
     bestOverallCommand = prefix + bestOverallCommand
     //bestOverallCommand = bestOverallCommand + ' --asset_capital=' + argv.asset_capital + ' --currency_capital=' + argv.currency_capital
@@ -724,7 +714,6 @@ if (simArgs.help || !(simArgs.use_strategies))
   process.exit(0)
 }
 
-
 delete simArgs.use_strategies
 delete simArgs.population_data
 delete simArgs.population
@@ -764,7 +753,6 @@ try
       let filePath = path.resolve(__dirname, '..','..', 'simulations',files[i] )
       fs.unlinkSync(filePath)
     }
-
   }
 } catch (err)
 {
@@ -842,5 +830,5 @@ process.on('uncaughtException', exitHandler.bind(null, {exit:true}))
 
 
 setInterval( ()=>{
-  if (generationProcessing == false)  simulateGeneration(generateLaunchFile)
+  if (generationProcessing == false) simulateGeneration(generateLaunchFile)
 },1000)
