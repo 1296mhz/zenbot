@@ -31,6 +31,10 @@ let distanceOfTimeInWords = require('./modules/distanceOfTimeInWords')
 let ensureDirectoryExistence = require('./modules/ensureDirectoryExistence')
 let writeFileAndFolder = require('./modules/writeFileAndFolder')
 let saveGenerationData = require('./modules/saveGenerationData')
+let isUsefulKey = require('./modules/isUsefulKey')
+let generateCommandParams = require('./modules/generateCommandParams')
+
+
 let VERSION = 'Zenbot 4 Genetic Backtester v0.2.2'
 
 let PARALLEL_LIMIT = (process.env.PARALLEL_LIMIT && +process.env.PARALLEL_LIMIT) || require('os').cpus().length
@@ -937,32 +941,6 @@ function allStrategyNames ()  {
     r.push(k)
   }
   return r
-}
-
-function isUsefulKey  (key)  {
-  if(key == 'filename' || key == 'show_options' || key == 'sim') return false
-  return true
-}
-
-function generateCommandParams (input)  {
-  input = input.params.replace('module.exports =','')
-  input = JSON.parse(input)
-
-  var result = ''
-  var keys = Object.keys(input)
-  for(let i = 0;i < keys.length;i++){
-    var key = keys[i]
-    if(isUsefulKey(key)){
-      // selector should be at start before keys
-      if(key == 'selector'){
-        result = input[key] + result
-      }
-
-      else result += ' --'+key+'='+input[key]
-    }
-
-  }
-  return result
 }
 
 let population_data = argv.population_data || `backtest_${moment().format('YYYYMMDDHHmm')}`
