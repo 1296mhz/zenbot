@@ -27,6 +27,10 @@ let z = require('zero-fill')
 let n = require('numbro')
 let _ = require('lodash')
 
+let distanceOfTimeInWords = require('./modules/distanceOfTimeInWords')
+let ensureDirectoryExistence = require('./modules/ensureDirectoryExistence')
+let writeFileAndFolder = require('./modules/writeFileAndFolder')
+
 let VERSION = 'Zenbot 4 Genetic Backtester v0.2.2'
 
 let PARALLEL_LIMIT = (process.env.PARALLEL_LIMIT && +process.env.PARALLEL_LIMIT) || require('os').cpus().length
@@ -247,35 +251,16 @@ let darwinMonitor = {
   }
 }
 
-let distanceOfTimeInWords = (timeA, timeB) => {
-  var hourDiff = timeA.diff(timeB, 'hours')
-  let minDiff = 0
-  if (hourDiff == 0) {
-    minDiff = timeA.diff(timeB, 'minutes')
-    var secDiff = timeA.clone().subtract(minDiff, 'minutes').diff(timeB, 'seconds')
-    return `${minDiff}m ${secDiff}s`
-  }
-  else {
-    minDiff = timeA.clone().subtract(hourDiff, 'hours').diff(timeB, 'minutes')
-    return `${hourDiff}h ${minDiff}m`
-  }
-}
 
-let ensureDirectoryExistence = (filePath) => {
-  var dirname = path.dirname(filePath)
-  if (fs.existsSync(dirname)) {
-    return true
-  }
-  ensureDirectoryExistence(dirname)
-  fs.mkdirSync(dirname)
-}
 
+/*
 let writeFileAndFolder = (filePath, data) => {
   ensureDirectoryExistence(filePath)
   fs.writeFile(filePath, data, err => {
     if (err) throw err
   })
 }
+*/
 
 let buildCommand = (taskStrategyName, phenotype) => {
   var iteration = iterationCount
