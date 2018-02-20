@@ -33,7 +33,7 @@ let writeFileAndFolder = require('./modules/writeFileAndFolder')
 let saveGenerationData = require('./modules/saveGenerationData')
 let isUsefulKey = require('./modules/isUsefulKey')
 let generateCommandParams = require('./modules/generateCommandParams')
-
+let allStrategyNames = require('./modules/allStrategyNames')
 
 let VERSION = 'Zenbot 4 Genetic Backtester v0.2.2'
 
@@ -933,14 +933,6 @@ const strategies = {
     wavetrend_oversold_2: Range(-100,0),
     wavetrend_trends: RangeBoolean()
   }
-}
-
-function allStrategyNames ()  {
-  let r = []
-  for (var k in strategies) {
-    r.push(k)
-  }
-  return r
 }
 
 let population_data = argv.population_data || `backtest_${moment().format('YYYYMMDDHHmm')}`
